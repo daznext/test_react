@@ -19,7 +19,7 @@ const App: FC = () => {
   return (
     <>
       <div>
-        <input value={searchString} onChange={onInputChange} />
+        <input value={searchString} onChange={onInputChange} size={50} />
       </div>
       <div>{searchString}</div>
     </>
