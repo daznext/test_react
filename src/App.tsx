@@ -59,22 +59,26 @@ interface SearchListProps {
   items: IItem[];
 }
 
+const sortItems = (items: IItem[]) =>
+  items.sort((a, b) => (a.name === b.name ? 0 : a.name > b.name ? 1 : -1));
+
 const SearchList = ({ items }: SearchListProps) => {
   const [searchString, setSearchString] = useState<string>("");
   const [lines, setLines] = useState<IItem[]>([]);
+  const [sortedItems, setSortedItems] = useState<IItem[]>([]);
+
+  useEffect(() => setSortedItems(sortItems(items)), [items]);
 
   useEffect(() => {
-    let _items = items.sort((a, b) => (a.name > b.name ? 1 : -1));
-
+    let _items: IItem[] = [];
     if (searchString !== "") {
       const re = new RegExp(searchString, "gi");
-      _items = _items.filter((l) => l.name.search(re) !== -1);
+      _items = sortedItems.filter((l) => l.name.search(re) !== -1);
+    } else {
+      _items = sortedItems.slice(0, 10);
     }
-
-    _items = _items.slice(0, 10);
-
     setLines(_items);
-  }, [searchString, items]);
+  }, [sortedItems, searchString]);
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchString(e.target.value);
